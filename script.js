@@ -81,7 +81,7 @@ let totalCO2Saved = 0;
 function addItemToGrid(info) {
     const grid = document.getElementById("closet-grid");
     
-    // Cloudinary AI Transformation
+    // AI Transformation
     const aiUrl = info.secure_url.replace(
         "/upload/", 
         "/upload/e_background_removal/f_auto,q_auto,c_pad,h_400,w_400/"
@@ -90,28 +90,24 @@ function addItemToGrid(info) {
     const card = document.createElement("article");
     card.className = "clothing-card";
     
-    // Define the specific savings for jeans/denim
-    const co2Saved = 25.0; 
+    // SMART CALCULATION LOGIC
+    // We check the "tags" or "original_filename" for the word 'jeans' or 'denim'
+    // If it's denim, we save 25kg; otherwise, we use the 2.5kg average.
+    const isDenim = info.original_filename.toLowerCase().includes('jean') || 
+                    info.original_filename.toLowerCase().includes('denim');
+    
+    const co2Saved = isDenim ? 25.0 : 2.5; 
 
     card.innerHTML = `
         <img src="${aiUrl}" alt="Closet Item" loading="lazy">
         <div class="card-info">
             <p class="carbon-stat">🌱 ${co2Saved}kg CO₂ Avoided</p>
-            <p><small>Prevented the purchase of a duplicate item.</small></p>
+            <p><small>${isDenim ? "High-impact denim" : "Standard item"} digitized!</small></p>
         </div>
     `;
     
     grid.prepend(card);
     
-    // 3. Call the update function here!
-    updateTotalImpact(2.5);
-}
-
-// 4. Add this function at the bottom of script.js
-function updateTotalImpact(amount) {
-    totalCO2Saved += amount;
-    const counterDisplay = document.getElementById("total-co2");
-    if (counterDisplay) {
-        counterDisplay.innerText = totalCO2Saved.toFixed(1);
-    }
+    // Update the total dashboard at the top
+    updateTotalImpact(co2Saved);
 }
