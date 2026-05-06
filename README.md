@@ -1,20 +1,21 @@
-# EcoPixel: Sustainable Media Calculator
+# EcoCloset: Sustainable Digital Wardrobe
 
-This project was built to address the hidden environmental cost of the web. Every byte of data transferred across the internet consumes energy; by optimizing images with **Cloudinary**, we can significantly reduce bandwidth usage and the resulting digital carbon footprint.
+**EcoCloset** is a mission-driven web application designed to combat the environmental impact of fast fashion. By leveraging **Cloudinary’s AI**, the platform allows users to "shop their own closet," reducing the need for new clothing production and lowering individual carbon footprints.
 
-## The Concept
-**EcoPixel** is a lightweight tool that demonstrates the power of "Green Coding." It allows users to upload any image, automatically applies Cloudinary’s `f_auto` and `q_auto` transformations, and calculates the real-world CO₂ reduction achieved through data optimization.
+---
 
-## Features
-*   **Instant Optimization:** Uses Cloudinary's AI to choose the best format and quality for images.
-*   **Sustainability Metrics:** Calculates estimated CO₂ savings based on data reduction (using the formula: $CO_{2} \text{ (grams)} = \text{data saved in MB} \times 0.02$).
-*   **Visual Comparison:** Side-by-side view of original vs. optimized media.
-*   **One-Click Upload:** Integrated with the Cloudinary Upload Widget for a seamless user experience.
+## The Problem
+The fashion industry is responsible for significant global carbon emissions and waste. Many consumers purchase duplicate or similar items because they cannot easily see their entire wardrobe at once.
 
-## Tech Stack
-*   **Frontend:** HTML5, CSS3 (Water.css), JavaScript.
-*   **Media Engine:** Cloudinary (Upload Widget & Transformation API).
-*   **Deployment:** Netlify
+## The Solution
+EcoCloset turns a cluttered smartphone gallery into a professional-grade digital catalog.
+*   **AI Background Removal:** Uses Cloudinary's `e_background_removal` to strip away messy room backgrounds, creating clean, "flat lay" catalog images.
+*   **Sustainability Metrics:** Every item added tracks a theoretical savings of **2.5 kg of CO2**, representing the average emissions avoided by choosing to reuse instead of buy new.
+*   **Green Coding:** All media is automatically optimized using Cloudinary’s `f_auto` and `q_auto` flags to reduce bandwidth usage and server energy consumption.
 
+## 🛠️ Technical Stack
+*   **Frontend:** HTML5, CSS3, JavaScript.
+*   **Styling:** CSS (for a clean, minimalist UI).
+*   **Media Processing:** Cloudinary Upload Widget & AI Transformation API.
 
 *Developed for the Cloudinary Earth Day Mini Hack*
