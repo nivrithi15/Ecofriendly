@@ -104,7 +104,7 @@ function addItemToGrid(info) {
     grid.prepend(card);
     
     // 3. Call the update function here!
-    updateTotalImpact(co2Saved);
+    updateTotalImpact(2.5);
 }
 
 // 4. Add this function at the bottom of script.js
