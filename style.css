@@ -33,36 +33,49 @@ header p {
 }
 
 /* 1. TOTAL IMPACT DASHBOARD */
+/* 1. TOTAL IMPACT DASHBOARD - FIXED CENTERING */
 .total-impact {
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
-    padding: 2rem;
-    border-radius: 20px;
-    margin: 20px auto;
-    max-width: 450px;
-    border: 2px solid #ffffff;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+    padding: 2.5rem;
+    border-radius: 30px; /* Matching the rounded look in your screenshot */
+    margin: 40px auto; /* 'auto' handles the horizontal centering */
+    max-width: 500px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers all content inside the card */
+    text-align: center;
 }
 
 .total-impact h2 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     color: #636e72;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .stat-circle {
-    font-size: 4rem;
-    color: #00b894; /* Sustainability Green */
+    display: flex;
+    align-items: baseline; /* Keeps 'kg' aligned with the bottom of the number */
+    justify-content: center;
+    gap: 15px;
+    color: #00b894;
     font-weight: 800;
+    margin: 10px 0;
+}
+
+#total-co2 {
+    font-size: 5rem; /* Large impact number */
     line-height: 1;
 }
 
 .stat-circle small {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     color: #636e72;
-    font-weight: 400;
+    font-weight: 500;
 }
 
 /* 2. UPLOAD CONTROLS */
