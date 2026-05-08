@@ -99,4 +99,19 @@ window.openItem = (index) => {
         }
     };
 };
+window.openStory = () => {
+    document.getElementById('story-modal').style.display = "block";
+};
+
+window.closeStory = () => {
+    document.getElementById('story-modal').style.display = "none";
+};
+
+// Update the general window.onclick to handle both modals
+window.onclick = (event) => {
+    const itemModal = document.getElementById('item-modal');
+    const storyModal = document.getElementById('story-modal');
+    if (event.target == itemModal) itemModal.style.display = "none";
+    if (event.target == storyModal) storyModal.style.display = "none";
+};
 window.closeModal = () => document.getElementById('item-modal').style.display = "none";

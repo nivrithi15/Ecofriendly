@@ -12,7 +12,36 @@
     <h1>Arca</h1>
     <p>Digitalize your wardrobe. Prevent fashion waste.</p>
 </header>
+<div class="story-controls">
+    <button class="icon-btn" onclick="openStory()">🌳 My Eco Story</button>
+</div>
 
+<div id="story-modal" class="modal">
+    <div class="modal-content story-card">
+        <span class="close-btn" onclick="closeStory()">&times;</span>
+        <h2 style="color: var(--accent-green);">The EcoCloset Impact</h2>
+        
+        <div class="story-comparison">
+            <div class="story-box before">
+                <h4>Before Arca</h4>
+                <ul>
+                    <li>❌ 18 unused clothes</li>
+                    <li>❌ No tracking</li>
+                    <li>❌ Overbuying</li>
+                </ul>
+            </div>
+            <div class="story-box after">
+                <h4>After Arca</h4>
+                <ul>
+                    <li>✔ 9 clothes donated</li>
+                    <li>✔ ₹4500 recovered</li>
+                    <li>✔ 31kg CO₂ reduced</li>
+                </ul>
+            </div>
+        </div>
+        <p class="eco-fact">That's like planting 1.5 mature trees!</p>
+    </div>
+</div>
 <main>
     <div class="total-impact">
         <h2>Total Closet Impact</h2>
