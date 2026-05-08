@@ -31,7 +31,8 @@ const myWidget = cloudinary.createUploadWidget({
         console.log('Done! Here is the image info: ', result.info);
         
         // 1. Get the image URL
-        const imageUrl = result.info.secure_url;
+        // Replace the old imageUrl line with this:
+        const imageUrl = result.info.secure_url.replace("/upload/", "/upload/e_background_removal/");
 
         // 2. Create the HTML for the new card
         const cardHTML = `
@@ -56,3 +57,47 @@ const myWidget = cloudinary.createUploadWidget({
 document.getElementById("upload_widget").addEventListener("click", function(){
     myWidget.open();
 }, false)
+// --- 1. LOAD GALLERY ON STARTUP ---
+document.addEventListener("DOMContentLoaded", () => {
+    const savedClothes = JSON.parse(localStorage.getItem("myArcaCloset")) || [];
+    savedClothes.forEach(url => renderCard(url));
+    updateImpact();
+});
+
+// --- 2. THE RENDER FUNCTION ---
+function renderCard(imageUrl) {
+    const grid = document.getElementById('wardrobe-grid');
+    // We apply the background removal transformation here too
+    const transparentImg = imageUrl.replace("/upload/", "/upload/e_background_removal/");
+    
+    const cardHTML = `
+        <div class="clothing-card">
+            <img src="${transparentImg}" alt="Clothing Item">
+            <div class="card-info">
+                <p class="carbon-stat">Saved 2.5kg CO₂</p>
+                <small>Digitalized</small>
+            </div>
+        </div>
+    `;
+    grid.insertAdjacentHTML('afterbegin', cardHTML);
+}
+
+// --- 3. UPDATED UPLOAD WIDGET ---
+const myWidget = cloudinary.createUploadWidget({
+    cloudName: cloudName, 
+    uploadPreset: uploadPreset,
+    cropping: true
+}, (error, result) => { 
+    if (!error && result && result.event === "success") { 
+        const newUrl = result.info.secure_url;
+
+        // Save to LocalStorage so it persists!
+        const savedClothes = JSON.parse(localStorage.getItem("myArcaCloset")) || [];
+        savedClothes.push(newUrl);
+        localStorage.setItem("myArcaCloset", JSON.stringify(savedClothes));
+
+        // Show it on the page
+        renderCard(newUrl);
+        updateImpact();
+    }
+});
