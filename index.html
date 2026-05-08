@@ -29,7 +29,12 @@
         <div class="controls">
             <button id="upload_widget" class="cloudinary-button">Add New Item</button>
         </div>
-
+        <div class="folder-navigation">
+            <button class="folder-btn active" onclick="filterFolder('all')">All</button>
+            <button class="folder-btn" onclick="filterFolder('dresses')">Dresses</button>
+            <button class="folder-btn" onclick="filterFolder('casuals')">Casuals</button>
+            <button class="folder-btn" onclick="filterFolder('home')">Home Wear</button>
+        </div>
         <div id="wardrobe-grid" class="grid">
             </div>
     </main>

@@ -34,6 +34,60 @@ const renderCard = (url) => {
         </div>
     `;
     grid.insertAdjacentHTML('afterbegin', card);
+    // --- 1. RENDER WITH CATEGORY ---
+const renderCard = (item) => {
+    const grid = document.getElementById('wardrobe-grid');
+    // item is now an object: { url: "...", category: "..." }
+    const processedUrl = item.url.replace("/upload/", "/upload/e_background_removal/");
+
+    const card = `
+        <div class="clothing-card" data-category="${item.category}">
+            <img src="${processedUrl}" alt="${item.category}">
+            <div class="card-info">
+                <p class="carbon-stat">Saved 2.5kg CO₂</p>
+                <small>${item.category.toUpperCase()}</small>
+            </div>
+        </div>
+    `;
+    grid.insertAdjacentHTML('afterbegin', card);
+};
+
+// --- 2. FILTERING LOGIC ---
+window.filterFolder = (category) => {
+    const cards = document.querySelectorAll('.clothing-card');
+    
+    // Update button styling
+    document.querySelectorAll('.folder-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if(btn.innerText.toLowerCase().includes(category)) btn.classList.add('active');
+    });
+
+    cards.forEach(card => {
+        if (category === 'all' || card.getAttribute('data-category') === category) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+    });
+};
+
+// --- 3. MODIFIED WIDGET SUCCESS ---
+// Inside your widget success callback:
+(error, result) => {
+    if (!error && result && result.event === "success") {
+        // Ask the user which folder this belongs to
+        const category = prompt("Which folder? (dresses, casuals, home)").toLowerCase() || 'casuals';
+        
+        const newItem = { url: result.info.secure_url, category: category };
+        
+        const saved = JSON.parse(localStorage.getItem("arcaWardrobe")) || [];
+        saved.push(newItem);
+        localStorage.setItem("arcaWardrobe", JSON.stringify(saved));
+
+        renderCard(newItem);
+        updateImpact(saved.length);
+    }
+}
 };
 
 // --- 3. CLOUDINARY INTEGRATION ---
