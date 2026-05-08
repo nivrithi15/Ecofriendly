@@ -1,103 +1,94 @@
-// --- CONFIGURATION ---
-const cloudName = "dmvuzwlxs"; // Replace with your Cloudinary name
-const uploadPreset = "ecocloset";  // Replace with your unsigned preset
+// --- 1. CONFIGURATION (Double-check these in your Cloudinary Dashboard) ---
+const CLOUD_NAME = "dmvuzwlxs"; // Find this on your Dashboard
+const UPLOAD_PRESET = "ecocloset"; // Must be an "Unsigned" preset
 
-// --- UI ELEMENTS ---
-const grid = document.getElementById('wardrobe-grid');
-const totalDisplay = document.getElementById('total-co2');
-
-// --- IMPACT LOGIC ---
-function updateImpact() {
-    // Count how many clothing cards are currently in the grid
-    const itemCount = grid.getElementsByClassName('clothing-card').length;
-    
-    // Logic: Every item = 2.5kg saved
-    const totalSaved = (itemCount * 2.5).toFixed(1);
-    
-    // Update the dashboard number
-    totalDisplay.innerText = totalSaved;
-}
-
-// --- CLOUDINARY WIDGET ---
-const myWidget = cloudinary.createUploadWidget({
-    cloudName: cloudName, 
-    uploadPreset: uploadPreset,
-    sources: ['local', 'camera'],
-    multiple: false,
-    cropping: true, // Helps keep card images looking uniform
-    clientAllowedFormats: ["png", "jpg", "jpeg"]
-}, (error, result) => { 
-    if (!error && result && result.event === "success") { 
-        console.log('Done! Here is the image info: ', result.info);
-        
-        // 1. Get the image URL
-        // Replace the old imageUrl line with this:
-        const imageUrl = result.info.secure_url.replace("/upload/", "/upload/e_background_removal/");
-
-        // 2. Create the HTML for the new card
-        const cardHTML = `
-            <div class="clothing-card">
-                <img src="${imageUrl}" alt="Clothing Item">
-                <div class="card-info">
-                    <p class="carbon-stat">Saved 2.5kg CO₂</p>
-                    <small>Added to Arca</small>
-                </div>
-            </div>
-        `;
-
-        // 3. Inject into the grid
-        grid.insertAdjacentHTML('afterbegin', cardHTML);
-
-        // 4. Update the impact counter immediately
-        updateImpact();
-    }
-});
-
-// Open widget on button click
-document.getElementById("upload_widget").addEventListener("click", function(){
-    myWidget.open();
-}, false)
-// --- 1. LOAD GALLERY ON STARTUP ---
-document.addEventListener("DOMContentLoaded", () => {
-    const savedClothes = JSON.parse(localStorage.getItem("myArcaCloset")) || [];
+// --- 2. THE GALLERY STORAGE LOGIC ---
+// This ensures your clothes stay on the page after a refresh
+const loadGallery = () => {
+    const savedClothes = JSON.parse(localStorage.getItem("arcaWardrobe")) || [];
     savedClothes.forEach(url => renderCard(url));
-    updateImpact();
-});
+    updateImpact(savedClothes.length);
+};
 
-// --- 2. THE RENDER FUNCTION ---
-function renderCard(imageUrl) {
+const updateImpact = (count) => {
+    const totalDisplay = document.getElementById('total-co2');
+    if (totalDisplay) {
+        totalDisplay.innerText = (count * 2.5).toFixed(1);
+    }
+};
+
+const renderCard = (url) => {
     const grid = document.getElementById('wardrobe-grid');
-    // We apply the background removal transformation here too
-    const transparentImg = imageUrl.replace("/upload/", "/upload/e_background_removal/");
-    
-    const cardHTML = `
+    if (!grid) return;
+
+    // Apply AI background removal transformation to the URL
+    const processedUrl = url.replace("/upload/", "/upload/e_background_removal/");
+
+    const card = `
         <div class="clothing-card">
-            <img src="${transparentImg}" alt="Clothing Item">
+            <img src="${processedUrl}" alt="Clothing Item">
             <div class="card-info">
                 <p class="carbon-stat">Saved 2.5kg CO₂</p>
-                <small>Digitalized</small>
+                <small>Verified Carbon Save</small>
             </div>
         </div>
     `;
-    grid.insertAdjacentHTML('afterbegin', cardHTML);
-}
+    grid.insertAdjacentHTML('afterbegin', card);
+};
 
-// --- 3. UPDATED UPLOAD WIDGET ---
-const myWidget = cloudinary.createUploadWidget({
-    cloudName: cloudName, 
-    uploadPreset: uploadPreset,
-    cropping: true
-}, (error, result) => { 
-    if (!error && result && result.event === "success") { 
-        const newUrl = result.info.secure_url;
+// --- 3. CLOUDINARY INTEGRATION ---
+let myWidget;
 
-        // Save to LocalStorage so it persists!
-        const savedClothes = JSON.parse(localStorage.getItem("myArcaCloset")) || [];
-        savedClothes.push(newUrl);
-        localStorage.setItem("myArcaCloset", JSON.stringify(savedClothes));
+// Wait for the window to load to ensure Cloudinary library is present
+window.onload = () => {
+    if (typeof cloudinary !== 'undefined') {
+        myWidget = cloudinary.createUploadWidget({
+            cloudName: CLOUD_NAME,
+            uploadPreset: UPLOAD_PRESET,
+            sources: ['local', 'camera'],
+            multiple: false,
+            cropping: true,
+            styles: {
+                palette: {
+                    window: "#FFFFFF",
+                    sourceBg: "#F4F4F5",
+                    windowBorder: "#9CAF88", // Sage Green border
+                    tabIcon: "#00B894",
+                    inactiveTabIcon: "#636E72",
+                    menuIcons: "#00B894",
+                    link: "#00B894",
+                    action: "#00B894",
+                    inProgress: "#00B894",
+                    complete: "#20B832",
+                    error: "#E84C3D",
+                    textDark: "#2D3436",
+                    textLight: "#FFFFFF"
+                }
+            }
+        }, (error, result) => {
+            if (!error && result && result.event === "success") {
+                const newUrl = result.info.secure_url;
+                
+                // Save to LocalStorage
+                const savedClothes = JSON.parse(localStorage.getItem("arcaWardrobe")) || [];
+                savedClothes.push(newUrl);
+                localStorage.setItem("arcaWardrobe", JSON.stringify(savedClothes));
 
-        // Show it on the page
-        renderCard(newUrl);
-        updateImpact();
+                // Add to UI
+                renderCard(newUrl);
+                updateImpact(savedClothes.length);
+            }
+        });
+
+        // Attach event listener to button
+        const btn = document.getElementById("upload_widget");
+        if (btn) {
+            btn.addEventListener("click", () => myWidget.open(), false);
+        }
+    } else {
+        console.error("Cloudinary library not found. Check your script tag in HTML.");
     }
-});
+    
+    // Load existing items
+    loadGallery();
+};
